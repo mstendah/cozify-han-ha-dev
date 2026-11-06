@@ -2,18 +2,18 @@
 
 **This is a development copy of the [official Cozify HAN integration](https://github.com/cozify/han-home-assistant)** with extra features under test (currently: the electricity price sensor). It uses its own integration domain `cozify_han_dev` and directory `custom_components/cozify_han_dev`, so it can be installed side by side with the official integration. Entities are named `Cozify HAN Dev ...` (for example `sensor.cozify_han_dev_current_electricity_price`) and the device is shown as "... (dev)". Add it from Settings -> Devices & services -> Add integration -> "Cozify HAN (dev)". Both integrations poll the HAN, so you may want to remove one when you are done testing.
 
-[![Current release](https://img.shields.io/github/v/release/cozify/han-home-assistant?style=plastic&label=Current%20release&include_prereleases)](https://github.com/cozify/han-home-assistant)
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=plastic)](https://github.com/hacs/integration)
-[![Stars](https://img.shields.io/github/stars/cozify/han-home-assistant?style=plastic)](https://github.com/cozify/han-home-assistant/stargazers)
-[![Last Commit](https://img.shields.io/github/last-commit/cozify/han-home-assistant?style=plastic)](https://github.com/cozify/han-home-assistant/commits/main)
-[![License](https://img.shields.io/github/license/cozify/han-home-assistant?style=plastic)](https://github.com/cozify/han-home-assistant/blob/main/LICENSE)
+[![Latest release](https://img.shields.io/github/v/release/mstendah/cozify-han-ha-dev?style=plastic&label=Latest%20release&include_prereleases)](https://github.com/mstendah/cozify-han-ha-dev/releases)
+[![Last Commit](https://img.shields.io/github/last-commit/mstendah/cozify-han-ha-dev?style=plastic)](https://github.com/mstendah/cozify-han-ha-dev/commits/main)
+[![License](https://img.shields.io/github/license/mstendah/cozify-han-ha-dev?style=plastic)](https://github.com/mstendah/cozify-han-ha-dev/blob/main/LICENSE)
 <br />
 
-If you find this integration useful, we would be grateful if you could add a star ⭐. You can do it here: <https://github.com/cozify/han-home-assistant>
+If you find the integration useful, please star the official project: <https://github.com/cozify/han-home-assistant> ⭐
 
 ## NOTE! - Change in version 1.0.14
 
 Sensor "Cozify HAN Power MAX" will be deprecated in future versions and replaced by "Cozify HAN Power Import MAX" and "Cozify HAN Power Export MAX". Also "Cozify HAN Power Total" and "Cozify HAN Power L1-L3" will be deprecated and removed in future versions and replaced similarily with "Cozify HAN Power Import" & "Cozify HAN Power Import L1-L3" and "Cozify HAN Power Export" and "Cozify HAN Power Export L1-L3"
+
+(In this dev copy all sensor names have the prefix "Cozify HAN Dev" instead of "Cozify HAN".)
 
 # Cozify HAN for Home Assistant
 
@@ -41,29 +41,36 @@ The prices are read from the HAN at most once per minute.
 
 ## Installation
 
-### Cozify HAN installation (HACS Default)
+This dev copy is not in the HACS default list. It can be installed next to the official integration without conflicts.
+
+### Install with HACS (custom repository)
 
 1. Open HACS from the Home Assistant sidebar.
-2. Type into the search field at the top (Search) or click the + (Plus) button in the bottom-right corner and search for: Cozify HAN.
-3. Click the Cozify HAN search result.
-4. Select Integration as the category and click Add.
-5. Click Download in the bottom-right corner.
-6. Restart Home Assistant so that the new files are loaded.
+2. Open the menu (three dots, top right) and choose **Custom repositories**.
+3. Enter the repository `https://github.com/mstendah/cozify-han-ha-dev`, select **Integration** as the type and click **Add**.
+4. Search for "Cozify HAN (dev)" in HACS and click **Download**.
+5. Restart Home Assistant so that the new files are loaded.
 
-### Step 2: Enable integration
+### Manual installation
+
+Copy the folder `custom_components/cozify_han_dev` from this repository to `/config/custom_components/cozify_han_dev` and restart Home Assistant.
+
+### Enable integration
 
 1. Go to Settings -> Devices and services.
 2. Click Add integration.
-3. Search for "Cozify HAN".
+3. Search for "Cozify HAN (dev)".
 4. Enter the IP address of your device (e.g. 192.168.1.10) and click Submit.
 
 ![Example view of the Cozify HAN Home Assistant page](images/Cozify_HAN_Home_Assistant_INFO.png)
 
 ## Electricity Price Tracking (Example)
 
-You can use the `sensor.cozify_han_power_total` sensor created by the integration to calculate the electricity price in real time. We recommend using the **Riemann sum integral** sensor to convert the instantaneous price (c/h) into cumulative consumption (c), which you can track with **Utility Meter** on a daily, weekly, and monthly basis.
+You can use the `sensor.cozify_han_dev_power_import_total` sensor (Cozify HAN Dev Power Import Total) created by the integration to calculate the electricity price in real time. We recommend using the **Riemann sum integral** sensor to convert the instantaneous price (c/h) into cumulative consumption (c), which you can track with **Utility Meter** on a daily, weekly, and monthly basis.
 
 ## Automation - Blueprints
+
+The blueprints below belong to the official integration (`cozify_han`) and its entities. The power limit blueprint only lists entities of the official integration, so with this dev copy use the official integration for it, or copy the blueprint and change the integration filter to `cozify_han_dev`.
 
 - Download via Home Automation Settings - Automation & scenes - Blueprints - Import Blueprint - "Enter the following address"
 

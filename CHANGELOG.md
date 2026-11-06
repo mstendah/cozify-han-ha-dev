@@ -21,6 +21,12 @@ This is the development copy of the [official Cozify HAN integration](https://gi
   - Entity names are prefixed `Cozify HAN Dev` and entity ids are `sensor.cozify_han_dev_*`, so they do not collide with the official integration's entities.
   - Add it from Settings -> Devices & services -> Add integration -> "Cozify HAN (dev)".
 
+### Documentation
+
+- README rewritten for the dev copy: HACS custom repository and manual installation instructions, setup as "Cozify HAN (dev)", entity ids with the `dev` prefix, and updated badges (no more links to the official project's release and HACS Default badges).
+- README notes that the blueprints are copies from the official repository and only list entities of the official integration (`cozify_han`).
+- Release notes added as `CHANGELOG.md`.
+
 ### Notes
 
 - The official and the dev integration both poll the HAN. Remove one of them when you are done testing.
