@@ -1,0 +1,11 @@
+{
+  "domain": "cozify_han_dev",
+  "name": "Cozify HAN (dev)",
+  "codeowners": ["@mstendah"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/mstendah/cozify-han-ha",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/mstendah/cozify-han-ha/issues",
+  "version": "1.0.14-dev"
+}

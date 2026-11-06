@@ -19,7 +19,7 @@ class CozifyHanConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             # Luodaan entry. Title on se, mikä näkyy integraatiolistassa.
             return self.async_create_entry(
-                title=f"Cozify HAN ({user_input[CONF_HOST]})", 
+                title=f"Cozify HAN Dev ({user_input[CONF_HOST]})", 
                 data=user_input
             )
 

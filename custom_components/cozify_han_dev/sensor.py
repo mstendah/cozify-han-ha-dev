@@ -128,7 +128,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     coordinator = DataUpdateCoordinator(
         hass,
         _LOGGER,
-        name="Cozify HAN sensor",
+        name="Cozify HAN Dev sensor",
         update_method=async_update_data,
         update_interval=timedelta(seconds=scan_interval),
     )
@@ -244,7 +244,7 @@ class CozifyBaseEntity(CoordinatorEntity):
 
         return {
             "identifiers": {(DOMAIN, mac)},
-            "name": self._device_info_data.get("name", "Cozify HAN"),
+            "name": f"{self._device_info_data.get('name', 'Cozify HAN')} (dev)",
             "manufacturer": "Cozify",
             "model": model,
             "sw_version": version,
@@ -257,7 +257,7 @@ class CozifyEnergySensor(CozifyBaseEntity, SensorEntity):
     def __init__(self, coordinator, entry, key, name, device_info_data):
         super().__init__(coordinator, entry, device_info_data)
         self._key = key
-        self._attr_name = f"Cozify HAN {name}"
+        self._attr_name = f"Cozify HAN Dev {name}"
         self._attr_unique_id = f"{entry.entry_id}_{key}"
         self._attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
         self._attr_device_class = SensorDeviceClass.ENERGY
@@ -277,7 +277,7 @@ class CozifyArraySensor(CozifyBaseEntity, SensorEntity):
     def __init__(self, coordinator, entry, key, idx, name, unit, device_info_data):
         super().__init__(coordinator, entry, device_info_data)
         self._key, self._idx = key, idx
-        self._attr_name = f"Cozify HAN {name}"
+        self._attr_name = f"Cozify HAN Dev {name}"
         self._attr_unique_id = f"{entry.entry_id}_{key}_{idx}"
         self._attr_native_unit_of_measurement = unit
         self._attr_state_class = SensorStateClass.MEASUREMENT
@@ -312,7 +312,7 @@ class CozifyPriceSensor(CozifyBaseEntity, SensorEntity):
 
     def __init__(self, coordinator, entry, device_info_data):
         super().__init__(coordinator, entry, device_info_data)
-        self._attr_name = "Cozify HAN Current Electricity Price"
+        self._attr_name = "Cozify HAN Dev Current Electricity Price"
         self._attr_unique_id = f"{entry.entry_id}_price_current"
         self._attr_icon = "mdi:cash-clock"
         self._attr_state_class = SensorStateClass.MEASUREMENT
@@ -358,7 +358,7 @@ class CozifyMaxCurrentSensor(CozifyBaseEntity, SensorEntity):
     def __init__(self, coordinator, entry, name, idx, device_info_data):
         super().__init__(coordinator, entry, device_info_data)
         self._idx = idx
-        self._attr_name = f"Cozify HAN {name}"
+        self._attr_name = f"Cozify HAN Dev {name}"
         self._attr_unique_id = f"{entry.entry_id}_max_i_{idx}"
         self._attr_native_unit_of_measurement = UnitOfElectricCurrent.AMPERE
         self._attr_device_class = SensorDeviceClass.CURRENT
@@ -384,7 +384,7 @@ class CozifyMaxCurrentSensor(CozifyBaseEntity, SensorEntity):
 class CozifyPeakPowerSensor(CozifyBaseEntity, SensorEntity):
     def __init__(self, coordinator, entry, device_info_data):
         super().__init__(coordinator, entry, device_info_data)
-        self._attr_name = "Cozify HAN DEPRECATED Power MAX"
+        self._attr_name = "Cozify HAN Dev DEPRECATED Power MAX"
         self._attr_unique_id = f"{entry.entry_id}_peak_p"
         self._attr_native_unit_of_measurement = UnitOfPower.WATT
         self._attr_device_class = SensorDeviceClass.POWER
@@ -410,7 +410,7 @@ class CozifyPeakPowerSensor(CozifyBaseEntity, SensorEntity):
 class CozifyPeakImportPowerSensor(CozifyBaseEntity, SensorEntity):
     def __init__(self, coordinator, entry, device_info_data):
         super().__init__(coordinator, entry, device_info_data)
-        self._attr_name = "Cozify HAN Power Import MAX"
+        self._attr_name = "Cozify HAN Dev Power Import MAX"
         self._attr_unique_id = f"{entry.entry_id}_peak_pi"
         self._attr_native_unit_of_measurement = UnitOfPower.WATT
         self._attr_device_class = SensorDeviceClass.POWER
@@ -436,7 +436,7 @@ class CozifyPeakImportPowerSensor(CozifyBaseEntity, SensorEntity):
 class CozifyPeakExportPowerSensor(CozifyBaseEntity, SensorEntity):
     def __init__(self, coordinator, entry, device_info_data):
         super().__init__(coordinator, entry, device_info_data)
-        self._attr_name = "Cozify HAN Power Export MAX"
+        self._attr_name = "Cozify HAN Dev Power Export MAX"
         self._attr_unique_id = f"{entry.entry_id}_peak_pe"
         self._attr_native_unit_of_measurement = UnitOfPower.WATT
         self._attr_device_class = SensorDeviceClass.POWER
@@ -463,7 +463,7 @@ class CozifyHANConfigSensor(CozifyBaseEntity, SensorEntity):
     def __init__(self, coordinator, entry, key, name, unit, icon, cat, device_info_data):
         super().__init__(coordinator, entry, device_info_data)
         self._key = key
-        self._attr_name = f"Cozify HAN {name}"
+        self._attr_name = f"Cozify HAN Dev {name}"
         self._attr_unique_id = f"{entry.entry_id}_conf_{key}"
         self._attr_native_unit_of_measurement = unit
         self._attr_icon = icon
@@ -506,7 +506,7 @@ class CozifyHANConfigSensor(CozifyBaseEntity, SensorEntity):
 class CozifyTimestampSensor(CozifyBaseEntity, SensorEntity):
     def __init__(self, coordinator, entry, device_info_data):
         super().__init__(coordinator, entry, device_info_data)
-        self._attr_name = "Cozify HAN Last Update"
+        self._attr_name = "Cozify HAN Dev Last Update"
         self._attr_unique_id = f"{entry.entry_id}_ts"
         self._attr_device_class = SensorDeviceClass.TIMESTAMP
         self._attr_entity_category = EntityCategory.DIAGNOSTIC
@@ -523,7 +523,7 @@ class CozifyTimestampSensor(CozifyBaseEntity, SensorEntity):
 class CozifyDiagnosticSensor(CozifyBaseEntity, SensorEntity):
     def __init__(self, coordinator, entry, name, val, device_info_data):
         super().__init__(coordinator, entry, device_info_data)
-        self._attr_name = f"Cozify HAN {name}"
+        self._attr_name = f"Cozify HAN Dev {name}"
         self._attr_unique_id = f"{entry.entry_id}_{name.lower().replace(' ', '_')}"
         self._val = val
         self._attr_entity_category = EntityCategory.DIAGNOSTIC

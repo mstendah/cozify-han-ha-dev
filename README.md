@@ -1,3 +1,7 @@
+# Cozify HAN (dev)
+
+**This is a development copy of the [official Cozify HAN integration](https://github.com/cozify/han-home-assistant)** with extra features under test (currently: the electricity price sensor). It uses its own integration domain `cozify_han_dev` and directory `custom_components/cozify_han_dev`, so it can be installed side by side with the official integration. Entities are named `Cozify HAN Dev ...` (for example `sensor.cozify_han_dev_current_electricity_price`) and the device is shown as "... (dev)". Add it from Settings -> Devices & services -> Add integration -> "Cozify HAN (dev)". Both integrations poll the HAN, so you may want to remove one when you are done testing.
+
 [![Current release](https://img.shields.io/github/v/release/cozify/han-home-assistant?style=plastic&label=Current%20release&include_prereleases)](https://github.com/cozify/han-home-assistant)
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=plastic)](https://github.com/hacs/integration)
 [![Stars](https://img.shields.io/github/stars/cozify/han-home-assistant?style=plastic)](https://github.com/cozify/han-home-assistant/stargazers)
@@ -25,7 +29,7 @@ Custom integration for Home Assistant to fetch real-time energy data from the Co
 
 ## Electricity price sensor
 
-`sensor.cozify_han_current_electricity_price` shows the currently active price from the HAN `/prices` endpoint in minor currency units per kWh (for example c/kWh for EUR, öre/kWh for SEK). If spot pricing is enabled on the HAN this is the current spot price, otherwise it is the fixed price. The state is `unknown` when spot pricing is active but the HAN has no current price, or when the firmware does not provide `/prices`.
+`sensor.cozify_han_dev_current_electricity_price` shows the currently active price from the HAN `/prices` endpoint in minor currency units per kWh (for example c/kWh for EUR, öre/kWh for SEK). If spot pricing is enabled on the HAN this is the current spot price, otherwise it is the fixed price. The state is `unknown` when spot pricing is active but the HAN has no current price, or when the firmware does not provide `/prices`.
 
 Attributes:
 

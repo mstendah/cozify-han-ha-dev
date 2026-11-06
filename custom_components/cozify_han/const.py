@@ -1,1 +1,0 @@
-DOMAIN = "cozify_han"

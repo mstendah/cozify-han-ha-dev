@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "title": "Cozify HAN -asetukset",
+        "title": "Cozify HAN (dev) -asetukset",
         "description": "Määritä sähkömittarin lukija.",
         "data": {
           "host": "Laitteen IP-osoite"

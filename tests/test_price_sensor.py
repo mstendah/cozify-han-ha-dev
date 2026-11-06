@@ -7,12 +7,12 @@ from homeassistant.helpers import entity_registry as er
 from homeassistant.util import dt as dt_util
 from pytest_homeassistant_custom_component.common import MockConfigEntry, async_fire_time_changed
 
-from custom_components.cozify_han.const import DOMAIN
-from custom_components.cozify_han.sensor import CozifyPriceSensor
+from custom_components.cozify_han_dev.const import DOMAIN
+from custom_components.cozify_han_dev.sensor import CozifyPriceSensor
 
 from .conftest import HOST, PRICES
 
-ENTITY_ID = "sensor.cozify_han_current_electricity_price"
+ENTITY_ID = "sensor.cozify_han_dev_current_electricity_price"
 
 
 async def _setup(hass):
@@ -67,7 +67,7 @@ async def test_missing_prices_endpoint_keeps_other_sensors_working(hass, mock_ha
     await _setup(hass)
 
     assert hass.states.get(ENTITY_ID).state == "unknown"
-    assert hass.states.get("sensor.cozify_han_total_power_imported").state == "1000.5"
+    assert hass.states.get("sensor.cozify_han_dev_total_power_imported").state == "1000.5"
 
 
 async def test_prices_fetch_is_throttled(hass, mock_han):
@@ -83,7 +83,7 @@ async def test_prices_fetch_is_throttled(hass, mock_han):
 
     # After the window a new price is picked up
     mock_han({**PRICES, "price": 12.5})
-    with patch("custom_components.cozify_han.sensor.monotonic", return_value=10**9):
+    with patch("custom_components.cozify_han_dev.sensor.monotonic", return_value=10**9):
         async_fire_time_changed(hass, dt_util.utcnow() + timedelta(seconds=120))
         await hass.async_block_till_done()
     assert float(hass.states.get(ENTITY_ID).state) == 12.5
