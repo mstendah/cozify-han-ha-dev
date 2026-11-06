@@ -2,6 +2,8 @@
 
 **This is a development copy of the [official Cozify HAN integration](https://github.com/cozify/han-home-assistant)** with extra features under test (currently: the electricity price sensor). It uses its own integration domain `cozify_han_dev` and directory `custom_components/cozify_han_dev`, so it can be installed side by side with the official integration. Entities are named `Cozify HAN Dev ...` (for example `sensor.cozify_han_dev_current_electricity_price`) and the device is shown as "... (dev)". Add it from Settings -> Devices & services -> Add integration -> "Cozify HAN (dev)". Both integrations poll the HAN, so you may want to remove one when you are done testing.
 
+Current dev version: **1.0.14-dev.2** (based on the official 1.0.14). See [CHANGELOG.md](CHANGELOG.md) for the release notes.
+
 [![Latest release](https://img.shields.io/github/v/release/mstendah/cozify-han-ha-dev?style=plastic&label=Latest%20release&include_prereleases)](https://github.com/mstendah/cozify-han-ha-dev/releases)
 [![Last Commit](https://img.shields.io/github/last-commit/mstendah/cozify-han-ha-dev?style=plastic)](https://github.com/mstendah/cozify-han-ha-dev/commits/main)
 [![License](https://img.shields.io/github/license/mstendah/cozify-han-ha-dev?style=plastic)](https://github.com/mstendah/cozify-han-ha-dev/blob/main/LICENSE)

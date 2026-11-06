@@ -2,6 +2,19 @@
 
 This is the development copy of the [official Cozify HAN integration](https://github.com/cozify/han-home-assistant). It is based on the official code at commit `0d27a23` (version 1.0.14).
 
+## 1.0.14-dev.2 (2026-11-06)
+
+### Changed
+
+- Version bumped to `1.0.14-dev.2` in `manifest.json` (it previously said `1.0.14-dev` while the release notes said `1.0.14-dev.1`). No functional changes to the sensors compared to `1.0.14-dev.1`.
+
+### Documentation
+
+- README rewritten for the dev copy: HACS custom repository and manual installation instructions, setup as "Cozify HAN (dev)", entity ids with the `dev` prefix, and updated badges (no more links to the official project's release and HACS Default badges).
+- README notes that the blueprints are copies from the official repository and only list entities of the official integration (`cozify_han`).
+- Release notes added as `CHANGELOG.md`.
+- README shows the current dev version.
+
 ## 1.0.14-dev.1 (2026-11-06)
 
 ### New
@@ -20,12 +33,6 @@ This is the development copy of the [official Cozify HAN integration](https://gi
   - Integration name: "Cozify HAN (dev)". The device name gets the suffix "(dev)".
   - Entity names are prefixed `Cozify HAN Dev` and entity ids are `sensor.cozify_han_dev_*`, so they do not collide with the official integration's entities.
   - Add it from Settings -> Devices & services -> Add integration -> "Cozify HAN (dev)".
-
-### Documentation
-
-- README rewritten for the dev copy: HACS custom repository and manual installation instructions, setup as "Cozify HAN (dev)", entity ids with the `dev` prefix, and updated badges (no more links to the official project's release and HACS Default badges).
-- README notes that the blueprints are copies from the official repository and only list entities of the official integration (`cozify_han`).
-- Release notes added as `CHANGELOG.md`.
 
 ### Notes
 
