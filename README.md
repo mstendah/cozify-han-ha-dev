@@ -21,6 +21,19 @@ Custom integration for Home Assistant to fetch real-time energy data from the Co
 - **Voltage & Current:** Per-phase monitoring.
 - **Reactive Power:** Support for reactive power monitoring (VAr).
 - **Energy Statistics:** Total imported and exported energy for Home Assistant Energy Dashboard.
+- **Electricity Price:** The price currently in use by the HAN (the spot price when spot pricing is enabled on the device), including the known price slots.
+
+## Electricity price sensor
+
+`sensor.cozify_han_current_electricity_price` shows the currently active price from the HAN `/prices` endpoint in minor currency units per kWh (for example c/kWh for EUR, öre/kWh for SEK). If spot pricing is enabled on the HAN this is the current spot price, otherwise it is the fixed price. The state is `unknown` when spot pricing is active but the HAN has no current price, or when the firmware does not provide `/prices`.
+
+Attributes:
+
+- `currency`: the currency reported by the HAN.
+- `prices`: all price slots known to the HAN as `[[start_timestamp_ms, price], ...]`, for example for charts or for finding the cheapest hours. This attribute is excluded from the recorder.
+- `spot_pricing`: whether spot pricing is enabled on the HAN (only present when the HAN reports it).
+
+The prices are read from the HAN at most once per minute.
 
 ## Installation
 

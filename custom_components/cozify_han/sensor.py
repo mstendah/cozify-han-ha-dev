@@ -1,5 +1,6 @@
 import logging
 from datetime import timedelta
+from time import monotonic
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.util import dt as dt_util
 
@@ -27,6 +28,29 @@ from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
+# The HAN price (/prices) only changes at price slot boundaries, so there is
+# no need to poll it as often as the meter readings.
+PRICES_REFRESH_SECONDS = 60
+
+# Unit shown for the price sensor: the HAN reports prices in minor currency
+# units per kWh (e.g. cents/kWh, öre/kWh).
+MINOR_UNITS = {
+    "EUR": "c",
+    "SEK": "öre",
+    "NOK": "øre",
+    "DKK": "øre",
+    "GBP": "p",
+    "PLN": "gr",
+    "CZK": "h",
+    "HUF": "f",
+    "RON": "bani",
+    "BGN": "st",
+    "CHF": "Rp.",
+    "ISK": "aur",
+}
+DEFAULT_PRICE_UNIT = "c/kWh"
+
+
 async def async_setup_entry(hass, entry, async_add_entities):
     # Set all the sensors
     host = entry.data[CONF_HOST]
@@ -41,6 +65,27 @@ async def async_setup_entry(hass, entry, async_add_entities):
                 device_info_init = await response.json()
     except Exception as err:
         _LOGGER.warning("Laitetietojen haku epäonnistui alustuksessa: %s", err)
+
+    # Latest /prices response, refreshed at most every PRICES_REFRESH_SECONDS
+    price_cache = {"data": {}, "fetched": None}
+
+    async def async_fetch_prices():
+        """Return the /prices response; empty dict if the HAN does not offer it."""
+        last = price_cache["fetched"]
+        if last is not None and monotonic() - last < PRICES_REFRESH_SECONDS:
+            return price_cache["data"]
+        # Also throttles retries when the endpoint is missing or failing
+        price_cache["fetched"] = monotonic()
+        try:
+            r_prices = await session.get(f"http://{host}/prices", ssl=False)
+            if r_prices.status == 200:
+                price_cache["data"] = await r_prices.json(content_type=None)
+            else:
+                price_cache["data"] = {}
+        except Exception as err:
+            _LOGGER.debug("Hintatietojen haku epäonnistui: %s", err)
+            price_cache["data"] = {}
+        return price_cache["data"]
 
     # 2. Cordinator retrieves data from different endpoints
     async def async_update_data():
@@ -69,6 +114,9 @@ async def async_setup_entry(hass, entry, async_add_entities):
                 except Exception as err:
                     _LOGGER.debug("Mittarin identity-haku epäonnistui: %s", err)
                     combined_data["meter_id"] = {}
+
+                # Sähkön hinta (spot-hinta kun spot-hinnoittelu on käytössä)
+                combined_data["prices"] = await async_fetch_prices()
 
                 return combined_data
         except Exception as err:
@@ -123,6 +171,9 @@ async def async_setup_entry(hass, entry, async_add_entities):
         CozifyArraySensor(coordinator, entry, "r", 1, "Reactive Power L1", "var", device_info_init),
         CozifyArraySensor(coordinator, entry, "r", 2, "Reactive Power L2", "var", device_info_init),
         CozifyArraySensor(coordinator, entry, "r", 3, "Reactive Power L3", "var", device_info_init),
+
+        # --- PRICE ---
+        CozifyPriceSensor(coordinator, entry, device_info_init),
 
         # --- KONFIGURAATION AND DIAGNOSTICS ---
         CozifyHANConfigSensor(coordinator, entry, "v", "Firmware Version", None, "mdi:git", EntityCategory.DIAGNOSTIC, device_info_init),
@@ -246,6 +297,61 @@ class CozifyArraySensor(CozifyBaseEntity, SensorEntity):
             return float(arr[self._idx]) if len(arr) > self._idx else 0.0
         except Exception:
             return 0.0
+
+
+class CozifyPriceSensor(CozifyBaseEntity, SensorEntity):
+    """Currently active electricity price reported by the HAN (/prices).
+
+    With spot pricing enabled on the HAN this is the current spot price,
+    otherwise it is the fixed price. The known price slots are exposed in the
+    "prices" attribute as [[start_timestamp_ms, price], ...].
+    """
+
+    # Large list that changes with every update, keep it out of the recorder
+    _unrecorded_attributes = frozenset({"prices"})
+
+    def __init__(self, coordinator, entry, device_info_data):
+        super().__init__(coordinator, entry, device_info_data)
+        self._attr_name = "Cozify HAN Current Electricity Price"
+        self._attr_unique_id = f"{entry.entry_id}_price_current"
+        self._attr_icon = "mdi:cash-clock"
+        self._attr_state_class = SensorStateClass.MEASUREMENT
+        self._attr_suggested_display_precision = 2
+
+    @property
+    def _prices(self):
+        data = self.coordinator.data or {}
+        prices = data.get("prices")
+        return prices if isinstance(prices, dict) else {}
+
+    @property
+    def native_unit_of_measurement(self):
+        currency = self._prices.get("currency")
+        if not currency:
+            return DEFAULT_PRICE_UNIT
+        return f"{MINOR_UNITS.get(currency, f'{currency}/100')}/kWh"
+
+    @property
+    def native_value(self):
+        # price is null when spot pricing is active but no price is available
+        price = self._prices.get("price")
+        if isinstance(price, bool) or not isinstance(price, (int, float)):
+            return None
+        return float(price)
+
+    @property
+    def extra_state_attributes(self):
+        prices = self._prices
+        if not prices:
+            return None
+        config = (self.coordinator.data or {}).get("config") or {}
+        attrs = {
+            "currency": prices.get("currency"),
+            "prices": prices.get("prices") or [],
+        }
+        if "s" in config:
+            attrs["spot_pricing"] = config.get("s") is True
+        return attrs
 
 
 class CozifyMaxCurrentSensor(CozifyBaseEntity, SensorEntity):
